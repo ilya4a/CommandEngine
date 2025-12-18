@@ -10,6 +10,7 @@
 #include <functional>
 #include <map>
 #include <stdexcept>
+#include <unordered_map>
 #include "Wrapper.h"
 
 class Engine {
