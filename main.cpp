@@ -16,15 +16,25 @@ struct Subject {
 int main() {
     Subject subj;
 
+    Wrapper wrapper(&subj, &Subject::f3, {{"arg1", 0},
+                                          {"arg2", 0}});
+
     Engine engine;
+    engine.register_command(&wrapper, "command1");
 
-    Wrapper::ArgMap defaults = { {"arg1", 0}, {"arg2", 0} };
-    Wrapper* w = new Wrapper(defaults);
+    std::cout << engine.execute("command1", {{"arg1", 4},
+                                             {"arg2", 5}}) << std::endl; // prints "9"
 
-    engine.register_command(w, "command1");
+    // void
+    Wrapper w_void(&subj, &Subject::f_void, {{"x", 0}});
+    engine.register_command(&w_void, "voidcmd");
+    std::cout << "[" << engine.execute("voidcmd", {{"x", 42}}) << "]"
+              << std::endl; // prints f_void called...
 
-    std::cout << engine.execute("command1", { {"arg1", 4}, {"arg2", 5} }) << std::endl;
+    // const method with string return
+    Wrapper w_str(&subj, static_cast<std::string(Subject::*)(int) const>(&Subject::f_string), {{"x", 7}});
+    engine.register_command(&w_str, "s");
+    std::cout << engine.execute("s", {{"x", 100}}) << std::endl; // prints "val:100"
 
-    delete w;
     return 0;
 }

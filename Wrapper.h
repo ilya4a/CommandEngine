@@ -30,6 +30,11 @@ public:
             throw std::runtime_error("Wrapper ctor: number of parameter names differs from method arity");
         }
 
+        static_assert(all_int<std::tuple_element_t<0, ArgsTuple>>::value || N==0,
+                      "first parameter type is not int (but simplified task assumes all params are int)");
+
+        check_all_args_are_int<ArgsTuple>();
+
         call_ = [obj, mem, names=param_names_, defs=defaults_](const std::map<std::string,int>& args_map) -> std::string {
             std::vector<int> vals;
             vals.reserve(names.size());
@@ -55,6 +60,12 @@ private:
     std::unordered_map<std::string,int> defaults_;
     std::function<std::string(const std::map<std::string,int>&)> call_;
 
+    template<typename Tuple>
+    static void check_all_args_are_int() {
+        constexpr std::size_t N = std::tuple_size<Tuple>::value;
+        if constexpr (N > 0) check_all_args_are_int_impl<Tuple>(std::make_index_sequence<N>{});
+    }
+
     template<typename Tuple, std::size_t... I>
     static void check_all_args_are_int_impl(std::index_sequence<I...>) {
         bool ok = (true && ... && (std::is_same<std::decay_t<std::tuple_element_t<I, Tuple>>, int>::value));
@@ -73,6 +84,7 @@ private:
             return to_string_any<R>(res);
         }
     }
+
 
     template<typename R, typename C, typename MemFn>
     static std::string call_invoke(C* obj, MemFn mem, const std::vector<int>& vals) {
