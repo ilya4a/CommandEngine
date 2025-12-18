@@ -1,11 +1,9 @@
 #include <iostream>
 #include "Engine.h"
 
-
 struct Subject {
     int f3(int a, int b) { return a + b; }
 };
-
 
 int main() {
     Subject subj;
