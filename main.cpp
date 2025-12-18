@@ -3,6 +3,14 @@
 
 struct Subject {
     int f3(int a, int b) { return a + b; }
+
+    void f_void(int x) {
+        std::cout << "f_void called with " << x << "\n";
+    }
+
+    std::string f_string(int x) const {
+        return std::string("val:") + std::to_string(x);
+    }
 };
 
 int main() {

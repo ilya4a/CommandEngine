@@ -28,4 +28,7 @@ struct function_traits<R(C::*)(Args...) const> {
     static constexpr std::size_t arity = sizeof...(Args);
 };
 
+
+
+
 #endif //LAB2_TRAITS_H
