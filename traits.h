@@ -12,7 +12,6 @@
 
 template<typename T> struct function_traits;
 
-// non-const function
 template<typename R, typename C, typename... Args>
 struct function_traits<R(C::*)(Args...)> {
     using return_type = R;
@@ -21,7 +20,6 @@ struct function_traits<R(C::*)(Args...)> {
     static constexpr std::size_t arity = sizeof...(Args);
 };
 
-// const function
 template<typename R, typename C, typename... Args>
 struct function_traits<R(C::*)(Args...) const> {
     using return_type = R;
